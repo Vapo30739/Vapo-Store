@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 44px 0 40px 0; /* Adjust based on navbar and footer height */
+}
