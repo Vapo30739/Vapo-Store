@@ -30,7 +30,7 @@ const AnimatedRoutes = () => {
   return (
     <div
       id="app-container"
-      className="w-full min-h-screen bg-[#000] overflow-x-hidden"
+      className="w-full min-h-screen bg-[#000] overflow-hidden"
     >
       <Routes location={location}>
         <Route path="/" element={<MainLayout />}>
