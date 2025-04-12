@@ -59,7 +59,7 @@ const SettingsPage = () => {
     setLoading(true);
 
     try {
-      await updateSettings("dollar_price", dollarValue, token);
+      await updateSettings("dollar", dollarValue, token);
       setStatusMessage("Dollar price changed successfully!");
     } catch (error) {
       console.error("Change Failed", error.response?.data);
