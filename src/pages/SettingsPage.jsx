@@ -12,7 +12,7 @@ import HeroBulkImageUploadForm from "../components/HeroBulkImageUploadForm";
 import BackButton from "../components/BackButton";
 const SettingsPage = () => {
   const token = localStorage.getItem("token");
-  const [dollarValue, setDollarValue] = useState("");
+  const [dollarValue, setDollarValue] = useState(0);
   const [settings, setSettings] = useState({});
 
   const [aboutUs, setAboutUs] = useState("");
@@ -59,7 +59,7 @@ const SettingsPage = () => {
     setLoading(true);
 
     try {
-      await updateSettings("dollar", dollarValue, token);
+      await updateSettings("dollar", Number(dollarValue), token);
       setStatusMessage("Dollar price changed successfully!");
     } catch (error) {
       console.error("Change Failed", error.response?.data);
