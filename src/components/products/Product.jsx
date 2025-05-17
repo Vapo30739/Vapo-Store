@@ -87,7 +87,7 @@ const Product = ({ product }) => {
           </Link>
 
           <div className="px-1 text-sm">
-            {product.price && (
+            {typeof product.price && product.price > 0 &&  (
               <div className="font-bold text-green-700">
                 <p>
                   {product.discount ? (

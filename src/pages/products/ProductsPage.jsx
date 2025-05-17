@@ -23,37 +23,56 @@ const ProductsPage = () => {
   const [error, setError] = useState(null);
   const [categoryDetails, setCategoryDetails] = useState({});
   const [offersCategory, setOffersCategory] = useState(false);
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const results = await Promise.allSettled([
+        getCategoryById(id),
+        getSubCategories(),
+        getProductsByCategory(id),
+      ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [categoryData, subCategories, items] = await Promise.all([
-          getCategoryById(id),
-          getSubCategories(),
-          getProductsByCategory(id),
-        ]);
+      const [categoryRes, subCategoriesRes, productsRes] = results;
 
+      if (categoryRes.status === "fulfilled") {
+        const categoryData = categoryRes.value;
         setCategoryDetails(categoryData);
         setOffersCategory(categoryData.name.includes("عروض"));
+      } else {
+        console.warn("Failed to fetch category details:", categoryRes.reason);
+      }
 
+      if (subCategoriesRes.status === "fulfilled") {
+        const subCategories = subCategoriesRes.value;
         setAllSubCategories(
           subCategories.filter(
             (subCategory) => subCategory.main_category_id?._id === id
           )
         );
+      } else {
+        console.warn("Failed to fetch subcategories:", subCategoriesRes.reason);
+        setAllSubCategories([]); // fallback
+      }
 
+      if (productsRes.status === "fulfilled") {
+        const items = productsRes.value;
         setItems(items);
         setFilteredItems(items);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      } else {
+        console.warn("Failed to fetch products:", productsRes.reason);
+        setItems([]);
+        setFilteredItems([]);
       }
-    };
+    } catch (err) {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
-  }, [id]);
+  fetchData();
+}, [id]);
 
   useEffect(() => {
     if (!offersCategory) return;
@@ -90,6 +109,8 @@ const ProductsPage = () => {
       [...filteredItems, ...discountedItems].map((item) => [item._id, item])
     ).values(),
   ];
+
+  
 
   return (
     <div className="relative min-h-[100vh]">
@@ -132,6 +153,7 @@ const ProductsPage = () => {
             </div>
 
             <section className="py-5 font-bold">
+         
               {displayedItems.length > 0 ? (
                 <div
                   dir="rtl"

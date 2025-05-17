@@ -93,52 +93,53 @@ const ProductPage = () => {
                     {productDetails.description}
                   </p>
                 )}
-                {productDetails.price && (
-                  <div className="mb-6">
-                    <p className="font-bold text-lg mb-2">السعر:</p>
-                    {productDetails.discount ? (
-                      <div className="flex flex-col items-start gap-2">
-                        <span className="flex items-center text-gray-400 text-sm line-through">
-                          السعر الأصلي: ${productDetails.price}
-                        </span>
+                {typeof productDetails.price === "number" &&
+                  productDetails.price > 0 && (
+                    <div className="mb-6">
+                      <p className="font-bold text-lg mb-2">السعر:</p>
+                      {productDetails.discount ? (
+                        <div className="flex flex-col items-start gap-2">
+                          <span className="flex items-center text-gray-400 text-sm line-through">
+                            السعر الأصلي: ${productDetails.price}
+                          </span>
 
-                        <span className="flex items-center text-green-400 text-xl font-bold">
-                          السعر بعد الخصم: $
-                          {(
-                            productDetails.price *
-                            (1 - productDetails.discount / 100)
-                          ).toFixed(2)}
-                        </span>
+                          <span className="flex items-center text-green-400 text-xl font-bold">
+                            السعر بعد الخصم: $
+                            {(
+                              productDetails.price *
+                              (1 - productDetails.discount / 100)
+                            ).toFixed(2)}
+                          </span>
 
-                        <span className="text-sm text-gray-300">
-                          ما يعادل:
-                          {(
-                            productDetails.price *
-                            storedDollarValue *
-                            (1 - productDetails.discount / 100)
-                          ).toLocaleString("en-US", {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 2,
-                          })}
-                          ل.س
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-start gap-2">
-                        <span className="text-gray-300 text-xl font-bold">
-                          ${productDetails.price}
-                        </span>
-                        <span className="text-sm text-gray-300">
-                          ما يعادل:
-                          {(
-                            productDetails.price * storedDollarValue
-                          ).toLocaleString("en-US")}
-                          ل.س
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
+                          <span className="text-sm text-gray-300">
+                            ما يعادل:
+                            {(
+                              productDetails.price *
+                              storedDollarValue *
+                              (1 - productDetails.discount / 100)
+                            ).toLocaleString("en-US", {
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 2,
+                            })}
+                            ل.س
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-start gap-2">
+                          <span className="text-gray-300 text-xl font-bold">
+                            ${productDetails.price}
+                          </span>
+                          <span className="text-sm text-gray-300">
+                            ما يعادل:
+                            {(
+                              productDetails.price * storedDollarValue
+                            ).toLocaleString("en-US")}
+                            ل.س
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 <div className="mb-4">
                   <p className="font-bold text-lg mb-2">الصنف:</p>
