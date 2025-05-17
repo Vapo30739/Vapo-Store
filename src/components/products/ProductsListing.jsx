@@ -8,7 +8,7 @@ const ProductsListing = () => {
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(100);
 
   useEffect(() => {
     const fetchData = async () => {
