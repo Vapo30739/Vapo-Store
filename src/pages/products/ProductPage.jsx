@@ -213,7 +213,8 @@ const ProductPage = () => {
                           <p className="text-sm">{account.phone_number}+</p>
                         </div>
                         <button className="bg-red-600 text-white py-1 px-2 rounded">
-                          <a href={account.link}>تواصل من هنا</a>
+                    <a href={account.link} target="_blank" rel="noopener noreferrer">تواصل من هنا</a>
+
                         </button>
                       </li>
                     ))}
