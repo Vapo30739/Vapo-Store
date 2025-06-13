@@ -7,9 +7,10 @@ import {
   FaWhatsapp,
   FaYoutube,
 } from "react-icons/fa";
+import { GrWaypoint } from "react-icons/gr";
 
 const Footer = () => {
-  const [settings, setSettings] = useState({}); // ← starts as empty object
+  const [settings, setSettings] = useState({});
 
   useEffect(() => {
     const storedSettings = sessionStorage.getItem("settings");
@@ -93,6 +94,19 @@ const Footer = () => {
                   >
                     <FaYoutube />
                     <span className="hidden md:block">YouTube</span>
+                  </a>
+                </li>
+              )}
+              {social.youtube && (
+                <li>
+                  <a
+                    href={"http://maps.google.com/maps/search/Vapo%20Abo%20Mariam/@33.4908,36.3381,17z"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-white hover:text-red-500 transition-colors"
+                  >
+                   <GrWaypoint />
+                    <span className="hidden md:block">Location</span>
                   </a>
                 </li>
               )}
