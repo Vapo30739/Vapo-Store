@@ -5,3 +5,11 @@
 body {
   margin: 44px 0 40px 0; /* Adjust based on navbar and footer height */
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

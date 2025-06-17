@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getProductDetails } from "../../api/axios";
 import Spinner from "../../components/Spinner";
-
+import { useRef } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import BackButton from "../../components/BackButton";
 import { AiOutlineClose } from "react-icons/ai";
 const ProductPage = () => {
@@ -13,6 +14,8 @@ const ProductPage = () => {
   const [mainImage, setMainImage] = useState("");
   const storedDollarValue = sessionStorage.getItem("dollar_value") || 1;
   const [popupView, setPopupView] = useState(false);
+  const [showArrows, setShowArrows] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const [whatsappAccounts, setWhatsappAccounts] = useState([]);
   useEffect(() => {
@@ -23,6 +26,41 @@ const ProductPage = () => {
       setWhatsappAccounts(settingsObject.social_media.whatsapp);
     }
   }, []);
+  const containerRef = useRef(null);
+
+  const scrollRef = useRef(null);
+
+  const scroll = (direction) => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const scrollAmount = 100; 
+    container.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    if (productDetails?.images?.length) {
+      setCurrentImageIndex(0);
+    }
+  }, [productDetails]);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      const container = scrollRef.current;
+      const wrapper = containerRef.current;
+      if (container && wrapper) {
+        const contentWidth = container.scrollWidth;
+        const visibleWidth = wrapper.offsetWidth;
+        setShowArrows(contentWidth > visibleWidth);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, [productDetails?.images]);
 
   useEffect(() => {
     setLoading(true);
@@ -33,6 +71,7 @@ const ProductPage = () => {
         setProductDetails(response);
         if (response.images?.length) {
           setMainImage(response.images[0]);
+          setCurrentImageIndex(0);
         }
       } catch (err) {
         console.log(err.message);
@@ -42,6 +81,22 @@ const ProductPage = () => {
     };
     fetchData();
   }, []);
+  const goToNextImage = () => {
+    if (!productDetails?.images?.length) return;
+
+    const nextIndex = (currentImageIndex + 1) % productDetails.images.length;
+    setCurrentImageIndex(nextIndex);
+  };
+
+  const goToPrevImage = () => {
+    if (!productDetails?.images?.length) return;
+
+    const prevIndex =
+      (currentImageIndex - 1 + productDetails.images.length) %
+      productDetails.images.length;
+    setCurrentImageIndex(prevIndex);
+  };
+
   return (
     <>
       <div className="relative min-h-[100vh]">
@@ -52,32 +107,84 @@ const ProductPage = () => {
             <Spinner />
           ) : productDetails ? (
             <>
-              <div className="w-full">
-                <div className="w-full flex justify-center items-center mb-5">
-                  <img
-                    src={mainImage}
-                    alt="Main Product"
-                    className="rounded w-[350px] h-[350px] object-contain"
-                  />
-                </div>
+            <div className="w-full">
+  <div className="w-full flex justify-center items-center mb-5">
+    {/* زر اليسار */}
+    {productDetails.images?.length > 1 && (
+      <button
+        onClick={goToNextImage}
+        className="text-white hover:text-gray-300"
+        style={{ padding: "4px", marginRight: "10px" }}
+      >
+        <FaChevronLeft size={24} />
+      </button>
+    )}
 
-                {productDetails.images?.length > 1 && (
-                  <div
-                    dir="rtl"
-                    className="flex w-full justify-center items-center mb-5 flex-wrap"
-                  >
-                    {productDetails.images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Product Image ${index + 1}`}
-                        className="rounded-full w-10 h-10 mx-1 cursor-pointer object-cover"
-                        onClick={() => setMainImage(image)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+    <img
+      src={productDetails.images[currentImageIndex]}
+      alt={`Main Product ${currentImageIndex + 1}`}
+      className="rounded w-[350px] h-[350px] object-contain"
+    />
+
+
+    {productDetails.images?.length > 1 && (
+      <button
+        onClick={goToPrevImage}
+        className="text-white hover:text-gray-300"
+        style={{ padding: "4px", marginLeft: "10px" }}
+      >
+        <FaChevronRight size={24} />
+      </button>
+    )}
+  </div>
+
+
+  {productDetails.images?.length > 1 && (
+    <div
+      ref={containerRef}
+      className="w-full mb-5 relative flex items-center justify-center gap-2"
+    >
+      {showArrows && (
+        <button
+          onClick={() => scroll("left")}
+          className="z-10 text-white hover:text-gray-300"
+          style={{ padding: "4px" }}
+        >
+          <FaChevronLeft size={20} />
+        </button>
+      )}
+
+      <div
+        ref={scrollRef}
+        dir="rtl"
+        className="flex overflow-x-auto no-scrollbar space-x-2 flex-nowrap w-full max-w-[80%] justify-center"
+      >
+        {productDetails.images.map((image, index) => (
+          <img
+            key={index}
+            src={image}
+            alt={`Product Image ${index + 1}`}
+            onClick={() => setCurrentImageIndex(index)}
+            className={`rounded-full w-10 h-10 cursor-pointer object-cover flex-shrink-0
+              ${index === currentImageIndex ? "border-2 border-white ring-1 ring-white" : ""}
+            `}
+          />
+        ))}
+      </div>
+
+      {showArrows && (
+        <button
+          onClick={() => scroll("right")}
+          className="z-10 text-white hover:text-gray-300"
+          style={{ padding: "4px" }}
+        >
+          <FaChevronRight size={20} />
+        </button>
+      )}
+    </div>
+  )}
+</div>
+
 
               <div
                 dir="rtl"
@@ -213,8 +320,13 @@ const ProductPage = () => {
                           <p className="text-sm">{account.phone_number}+</p>
                         </div>
                         <button className="bg-red-600 text-white py-1 px-2 rounded">
-                    <a href={account.link} target="_blank" rel="noopener noreferrer">تواصل من هنا</a>
-
+                          <a
+                            href={account.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            تواصل من هنا
+                          </a>
                         </button>
                       </li>
                     ))}
