@@ -40,6 +40,20 @@ const ProductPage = () => {
     });
   };
 
+
+useEffect(() => {
+  if (scrollRef.current) {
+    const selectedThumbnail = scrollRef.current.querySelectorAll('img')[currentImageIndex];
+    if (selectedThumbnail) {
+      selectedThumbnail.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center', // يجعل العنصر يظهر في وسط العنصر الأب
+        block: 'nearest',
+      });
+    }
+  }
+}, [currentImageIndex]);
+
   useEffect(() => {
     if (productDetails?.images?.length) {
       setCurrentImageIndex(0);
@@ -157,7 +171,8 @@ const ProductPage = () => {
       <div
         ref={scrollRef}
         dir="rtl"
-        className="flex overflow-x-auto no-scrollbar space-x-2 flex-nowrap w-full max-w-[80%] justify-center"
+      className="flex overflow-x-auto no-scrollbar gap-2 flex-nowrap w-full max-w-[80%] px-4"
+
       >
         {productDetails.images.map((image, index) => (
           <img
