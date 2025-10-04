@@ -226,7 +226,7 @@ useEffect(() => {
                           </span>
 
                           <span className="flex items-center text-green-400 text-xl font-bold">
-                            السعر بعد الخصم: $
+                            سعر العرض: $
                             {(
                               productDetails.price 
                               - productDetails.discount 
