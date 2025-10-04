@@ -228,17 +228,17 @@ useEffect(() => {
                           <span className="flex items-center text-green-400 text-xl font-bold">
                             السعر بعد الخصم: $
                             {(
-                              productDetails.price *
-                              (1 - productDetails.discount / 100)
+                              productDetails.price 
+                              - productDetails.discount 
                             ).toFixed(2)}
                           </span>
 
                           <span className="text-sm text-gray-300">
                             ما يعادل:
                             {(
-                              productDetails.price *
-                              storedDollarValue *
-                              (1 - productDetails.discount / 100)
+                            (  productDetails.price - productDetails.discount)
+                            *  storedDollarValue 
+                              
                             ).toLocaleString("en-US", {
                               minimumFractionDigits: 0,
                               maximumFractionDigits: 2,
